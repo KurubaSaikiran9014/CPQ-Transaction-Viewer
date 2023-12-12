@@ -1,3 +1,6 @@
+//script page latest-1
+
+
 var tabUrl;
 var openTransactionUrl;
 let processId;
@@ -9,7 +12,7 @@ let loaderElement = divloaderElement.getElementsByTagName("span");
 let getQuoteDataButton = document.getElementById("get-quote-data");
 
 function getData(){
-      browser.tabs.query({active: true, currentWindow:true},(tabs)=>{
+      chrome.tabs.query({active: true, currentWindow:true},(tabs)=>{
         
         let currentTabUrl=tabs[0].url;
         if (currentTabUrl.includes("bigmachines.com")){
@@ -54,13 +57,9 @@ function getData(){
             });
           }
         
-          const doNetworkCall = async (tabUrl,offsetVal) => { //fetch Rest api Call
+          const doNetworkCall = async (tabUrl) => { //fetch Rest api Call
           let options={
-            "method":"GET",
-            "headers": {
-              "Access-Control-Allow-Origin": "*"
-
-            }
+            "method":"GET"
           }
           const response = await fetch(metaDataUrl,options);
           if (response.ok === false){ //checking if user login or not
@@ -83,51 +82,17 @@ function getData(){
             console.log(allCommerceProcces);
             let destinationCommerceProcess = ""; // Destinated commerce process that user Entered Transaction Id Presents
             for (let eachProcessName of allCommerceProcces){  //cheking The TransactionId in each Commerce Process
-                        
-            let allTransactionIDs = [];// stores All Transaction Ids in current Proccess
-
-            let processVarName; //stores each process Var name Uses for Open TransactionQuote
-            let page=0; //store current page (each page have 1000 transaction objects)
-            let offsetVal = page *1000;
-            console.log(eachProcessName);
-
-            async function doRestCall(){
-                let processTransactionDataUrl = 
+              let processTransactionDataUrl = 
                 "https://" +
                   tabUrl + 
                   "/rest/v14/" +
-                    eachProcessName+"?offset="+String(offsetVal);   // url for getting each transaction Data
-              //console.log(processTransactionDataUrl);
+                    eachProcessName+"/"+transactionId.value;   // url for getting each transaction Data
+              
               const transactionResponse = await fetch(processTransactionDataUrl, options);
-              if (transactionResponse.ok ===false){
-                alert("Failed to fetch Transaction Data");
-                divloaderElement.style.height="0px";//hiding loader
-                for (let i = 0; i<loaderElement.length; i++){
-                  loaderElement[i].style.display = "none";
-                }
-              }else{
-              const transactionData = await transactionResponse.json()
-              //console.log(eachProcessName);
-              //console.log(transactionData.items);
-              
-              
-              //checking transaction Id In each Commerce Proccess Transaction Data
-              for (let eachTransaction of transactionData.items){
-                  allTransactionIDs.push(eachTransaction._id); //pushing all tranactin ID in to an Array
-                  processVarName = eachTransaction._process_var_name;
-              }
-              if ((transactionData.hasMore === true) && (allTransactionIDs.includes(parseInt(transactionId.value)) === false)){ //checking if tranasctions are more than 1000 in current process if yes doing api call again
-                page = page+1;
-                offsetVal=(page*1000)+1;
-                await doRestCall();
-              }
-            }
-            }
-              await doRestCall();
-              console.log(allTransactionIDs);
-              if (allTransactionIDs.includes(parseInt(transactionId.value))){ //checking if transaction id in the TransactionID Array
-                    destinationCommerceProcess = processVarName;  //storing processname for entered TranasctionId
-                    break;
+              const transactionResponseData = await transactionResponse.json()
+              if (transactionResponse.status === 200){
+                destinationCommerceProcess=transactionResponseData._process_var_name;
+                //console.log(transactionResponseData._process_var_name);
               }
               
             }
@@ -220,5 +185,4 @@ viewXMLelement.addEventListener("click",function(){
     getData();
   }
 })*/
-
 
