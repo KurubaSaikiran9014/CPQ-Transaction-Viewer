@@ -1,28 +1,29 @@
 {
-  "manifest_version": 2, 
-  "name": "CPQ Transaction Viewer",
-  "version": "1.0",
-  "description": "Enter Transaction ID to view CPQ transaction quotes And XML Files",
-    "permissions": [
-      "tabs","scripting"
-    ],
-    "content_scripts": [
-      {
-        "matches": [
-          "*://*.bigmachines.com/*"
-        ],
-        "js":["index.js"]
-      }
-    ],
-    "icons": {
-      "48": "logo.png",  
-      "128": "logo.png"  
-    },
-    "browser_action":{
-      "default_popup":"popup/popup.html",
-      "default_icon":"logo.png" 
-       }
-       
-}
- 
-
+    "manifest_version": 3, 
+    "name": "CPQ Transaction Viewer By BS ID",
+    "version": "1.0",
+    "description": "Enter BSID to view CPQ transaction quotes And XML Files in Google Chrome",
+      "permissions": [
+        "tabs","scripting"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "*://*.bigmachines.com/*"
+          ],
+          "js":["index.js"]
+        }
+      ],
+      "icons": {
+        "48": "logo.png",  
+        "128": "logo.png"  
+      },
+      "action":{
+        "default_popup":"popup/popup.html",
+        "default_icon":"logo.png" 
+         },
+         "host_permissions":["*://*.bigmachines.com/*"]
+         
+  }
+   
+  
